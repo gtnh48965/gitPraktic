@@ -1,35 +1,88 @@
 import "./BurgerIngredients.css"
-import React from "react";
+import React, {useEffect} from "react";
 import {Tab} from "@ya.praktikum/react-developer-burger-ui-components";
+import Ingredient from "./Ingredients/Ingredient";
+import PropTypes from 'prop-types';
 
+const BurgerIngredients = ({data}) =>{
+    const [current, setCurrent] = React.useState('bun');
 
-const BurgerIngredients =()=>{
-    const [current, setCurrent] = React.useState('one');
+    useEffect(()=> {
+        const el = document.getElementById(current);
+        el.scrollIntoView({behavior: "smooth"});
+    },[current])
+    const data_bun = data?.filter(item => {
+            return item.type === 'bun'
+    })
+    const data_sauce = data?.filter(item => {
+        return item.type === 'sauce'
+    })
+    const data_main = data?.filter(item => {
+        return item.type === 'main'
+    })
+
     return (
-        <main>
-            <div className="container">
-            <h1>Соберите бургер</h1>
-            <div style={{ display: 'flex' }}>
-                <Tab value="one" active={current === 'one'} onClick={setCurrent}>
-                    One
+        <section className='left-section'>
+            <article className='tab'>
+                <Tab value="bun" active={current === 'bun'} onClick={setCurrent}>
+                    Булки
                 </Tab>
-                <Tab value="two" active={current === 'two'} onClick={setCurrent}>
-                    Two
+                <Tab value="sauce" active={current === 'sauce'} onClick={setCurrent}>
+                    Соусы
                 </Tab>
-                <Tab value="three" active={current === 'three'} onClick={setCurrent}>
-                    Three
+                <Tab value="main" active={current === 'main'} onClick={setCurrent}>
+                    Начинки
                 </Tab>
-            </div>
-                <div>
-                    <h2>Булка</h2>
-                    <div className="row">
-                        <div className="block">
-
-                        </div>
+            </article>
+            <article className='ingredients'>
+                <div id={'bun'}>
+                    <h3 className='title_ingredients'>Булки</h3>
+                    <div className='list_ingredients'>
+                        {data_bun?.map((item) =>
+                            <div key={item._id}>
+                                <Ingredient props={item} />
+                            </div>
+                        )}
                     </div>
                 </div>
-            </div>
-        </main>
+                <div id={'sauce'}>
+                    <h3 className='title_ingredients'>Соусы</h3>
+                    <div className='d-flex flex-wrap'>
+                        {data_sauce?.map((item) =>
+                            <div key={item._id}>
+                                <Ingredient props={item} />
+                            </div>
+
+                        )}
+                    </div>
+                </div>
+                <div id={'main'}>
+                    <h3 className='title_ingredients'>Начинки</h3>
+                    <div className='d-flex flex-wrap'>
+                        {data_main?.map((item) =>
+                            <div key={item._id}>
+                                <Ingredient props={item} />
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </article>
+        </section>
     )
 };
 export default BurgerIngredients;
+
+BurgerIngredients.propTypes = {
+    _id: PropTypes.string,
+    name: PropTypes.string,
+    type: PropTypes.string,
+    proteins: PropTypes.number,
+    fat: PropTypes.number,
+    carbohydrates: PropTypes.number,
+    calories: PropTypes.number,
+    price: PropTypes.number,
+    image: PropTypes.string,
+    image_mobile: PropTypes.string,
+    image_large: PropTypes.string,
+    __v: PropTypes.number,
+}

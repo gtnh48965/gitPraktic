@@ -1,22 +1,39 @@
-import React from 'react';
+import React, {useEffect,useRef} from 'react';
 import './App.css';
 import AppHeader from "../header/AppHeader";
 import BurgerIngredients from "../BurgerIngredients/BurgerIngredients";
-// import BurgerConstructor from "../BurgerConstructor/BurgerConstructor";
+import BurgerConstructor from "../BurgerConstructor/BurgerConstructor";
 
+let url = 'https://norma.nomoreparties.space/api/ingredients';
 
 function App() {
-  return (
-      <body>
+    const firstRenderRef = useRef(true);
+    const [data, setData] = React.useState(null)
+    useEffect(() => {
+        if (firstRenderRef.current) {
+            fetch(url)
+                .then(response => response.json())
+                .then(response => {
+                    setData(response.data)
+                })
+                .catch(err => console.log(err));
+        }
+        firstRenderRef.current = false;
+    })
+
+    return (
         <div className="App">
                 <AppHeader/>
-                <div id="position">
-                        <BurgerIngredients/>
-                        <BurgerIngredients/>
-                        {/*<BurgerConstructor/>*/}
-                </div>
+                <main className='container'>
+                    <div className={'row title'}>
+                        <h1>Соберите бургер</h1>
+                    </div>
+                    <div className='d-flex'>
+                        <BurgerIngredients data={data}/>
+                        <BurgerConstructor data={data}/>
+                    </div>
+                </main>
         </div>
-      </body>
   );
 }
 
